@@ -7,8 +7,8 @@ class Game extends React.Component {
 		super(props);
 
 		this.state = {
-			cols: 30,
-			rows: 30,
+			cols: 10,
+			rows: 10,
 			cells: [
 				{ x: 1, y: 0 },
 				{ x: 2, y: 1 },
@@ -32,7 +32,7 @@ class Game extends React.Component {
 	nextStep() {
 		let newCells = [];
 
-		// foreach alive cell
+		// foreach grid
 		for (let gridX = 0; gridX < this.state.cols; gridX++) {
 			for (let gridY = 0; gridY < this.state.rows; gridY++) {
 
@@ -46,6 +46,7 @@ class Game extends React.Component {
 							continue;
 						}
 
+						// if grid is active cell
 						if (this.findAliveCell(this.mod(gridX + x, this.state.cols), this.mod((gridY + y), this.state.cols)) !== undefined) {
 							aliveNeighbours++;
 						}
@@ -98,16 +99,52 @@ class Game extends React.Component {
 		return (
 			<div style={style.container}>
 				{grid}
-				<button onClick={this.nextStep}>Next step</button>
+				<div style={style.controls}>
+					<p>
+						<label>Rows</label>
+						<input type="number" value={this.state.rows} onChange={this.updateRows.bind(this)} />
+					</p>
+					<p>
+						<label>Cols</label>
+						<input type="number" value={this.state.cols} onChange={this.updateCols.bind(this)} />
+					</p>
+				</div>
 			</div>
 		);
+	}
+
+	updateRows(e) {
+		e.persist();
+		this.setState((state, props) => {
+			return {
+				...state,
+				rows: e.target.value
+			}
+		});
+	}
+
+	updateCols(e) {
+		e.persist();
+		this.setState((state, props) => {
+			return {
+				...state,
+				cols: e.target.value
+			}
+		});
 	}
 }
 
 const style = {
 
 	container: {
-		width: '100%'
+		position: 'relative',
+		margin: '0 auto'
+	},
+
+	controls: {
+		position: 'absolute',
+		bottom: '30px',
+		left: '30px'
 	},
 
 	cell: {
