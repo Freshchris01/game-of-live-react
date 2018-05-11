@@ -17,12 +17,16 @@ class Game extends React.Component {
 				{ x: 2, y: 2 },
 
 			],
-			running: false
+			running: false,
+			intervalId: -1,
 		}
 
 		this.nextStep = this.nextStep.bind(this);
 		this.findAliveCell = this.findAliveCell.bind(this);
 		this.mod = this.mod.bind(this);
+		this.updateCols = this.updateCols.bind(this);
+		this.updateRows = this.updateRows.bind(this);
+		this.togglePlayPause = this.togglePlayPause.bind(this);
 	}
 
 	mod(n, m) {
@@ -102,13 +106,15 @@ class Game extends React.Component {
 				<div style={style.controls}>
 					<p>
 						<label>Rows</label>
-						<input type="number" value={this.state.rows} onChange={this.updateRows.bind(this)} />
+						<input type="number" value={this.state.rows} onChange={this.updateRows} />
 					</p>
 					<p>
 						<label>Cols</label>
-						<input type="number" value={this.state.cols} onChange={/*move bind to constructor*/this.updateCols.bind(this)} />
+						<input type="number" value={this.state.cols} onChange={this.updateCols} />
 					</p>
-					<button onClick={this.nextStep}>Next step</button>
+					<button onClick={this.nextStep} style={{ display: this.state.running ? 'none' : 'inline-block' }}>Next step</button>
+					<button onClick={this.togglePlayPause}>{this.state.running ? 'Pause' : 'Play'}</button>
+
 				</div>
 			</div>
 		);
@@ -126,15 +132,25 @@ class Game extends React.Component {
 
 	updateCols(e) {
 		e.persist();
-		this.setState((state, props) => {
-			return {
-				...state,
-				cols: e.target.value
-			}
-		});
+		this.setState((state, props) => ({
+			cols: e.target.value
+		}))
+	}
+
+	// set and clear loop
+	togglePlayPause() {
+		let intervalId = -1;
+		if (!this.state.running) {
+			intervalId = setInterval(this.nextStep, 1000);
+		} else {
+			clearInterval(this.state.intervalId);
+		}
+		this.setState((state, props) => ({
+			running: !state.running,
+			intervalId: intervalId
+		}))
 	}
 }
-
 const style = {
 
 	container: {
