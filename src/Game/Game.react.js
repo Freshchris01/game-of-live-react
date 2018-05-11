@@ -106,8 +106,9 @@ class Game extends React.Component {
 					</p>
 					<p>
 						<label>Cols</label>
-						<input type="number" value={this.state.cols} onChange={this.updateCols.bind(this)} />
+						<input type="number" value={this.state.cols} onChange={/*move bind to constructor*/this.updateCols.bind(this)} />
 					</p>
+					<button onClick={this.nextStep}>Next step</button>
 				</div>
 			</div>
 		);
